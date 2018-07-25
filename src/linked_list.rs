@@ -26,4 +26,15 @@ impl<T> List<T> {
 
     self.root = Some(Box::new(new_node))
   }
+
+  pub fn pop(&mut self) -> Option<T> {
+    match mem::replace(&mut self.root, None) {
+      Some(node) => {
+        let temp_node = *node;
+        self.root = temp_node.next;
+        Some(temp_node.value)
+      },
+      None => None
+    }
+  }
 }

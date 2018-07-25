@@ -16,5 +16,22 @@ fn main() {
   list.push(853.654f32);
   list.push(59271.4f32);
 
+  let val = list.pop();
+  println!("Popped value: {}", val.unwrap());
+  let val = list.pop();
+  println!("Popped value: {}", val.unwrap());
+  let val = list.pop();
+  println!("Popped value: {}", val.unwrap());
+  let val = list.pop();
+  println!("Popped value: {}", val.unwrap());
+  let val = list.pop();
+  println!("Popped value: {}", val.unwrap());
+  let val = list.pop();
+  println!("Popped value: {}", val.unwrap());
+  let val = list.pop();
+  println!("Popped value: {}", val.unwrap());
+  let val = list.pop();
+  println!("Popped value: {}", val.unwrap());
+
   println!("{:?}", list);
 }
