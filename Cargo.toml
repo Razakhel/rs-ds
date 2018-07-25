@@ -1,0 +1,6 @@
+[package]
+name = "rs-ds"
+version = "0.1.0"
+authors = ["Razakhel <romain.milbert@gmail.com>"]
+
+[dependencies]
