@@ -1,5 +1,3 @@
-use std::mem;
-
 #[derive(Debug)]
 pub struct Node<T> {
   value: T,
@@ -14,6 +12,8 @@ impl<T> Node<T> {
 pub struct List<T> {
   root: Option<Box<Node<T>>>
 }
+
+pub struct IntoIter<T>(List<T>);
 
 impl<T> List<T> {
   pub fn new(root: Option<Box<Node<T>>>) -> Self { List { root } }
@@ -45,6 +45,18 @@ impl<T> List<T> {
     self.root.as_mut().map(|node| {
       &mut node.value
     })
+  }
+
+  pub fn into_iter(self) -> IntoIter<T> {
+    IntoIter(self)
+  }
+}
+
+impl<T> Iterator for IntoIter<T> {
+  type Item = T;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.0.pop()
   }
 }
 
@@ -88,9 +100,9 @@ mod test {
     assert_eq!(list.pop(), None);
 
     // Testing List<&str>
-    let mut list: List<&str> = List::new(Some(Box::new(Node::new("Hello",
-                                                                 Some(Box::new(Node::new("world",
-                                                                                         None)))))));
+    let mut list = List::new(Some(Box::new(Node::new("Hello",
+                                                     Some(Box::new(Node::new("world",
+                                                                             None)))))));
 
     let mut text = String::from(list.pop().unwrap());
     text.push_str(" ");
@@ -104,5 +116,18 @@ mod test {
 
     assert_eq!(list.peek(), Some(&42));
     assert_eq!(list.peek_mut(), Some(&mut 42));
+  }
+
+  #[test]
+  fn into_iter() {
+    let mut list: List<i32> = List::new(None);
+    list.push(1);
+    list.push(2);
+    list.push(3);
+
+    let mut iter = list.into_iter();
+    assert_eq!(iter.next(), Some(3));
+    assert_eq!(iter.next(), Some(2));
+    assert_eq!(iter.next(), Some(1));
   }
 }
