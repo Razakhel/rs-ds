@@ -34,6 +34,18 @@ impl<T> List<T> {
       temp_node.value
     })
   }
+
+  pub fn peek(&self) -> Option<&T> {
+    self.root.as_ref().map(|node| {
+      &node.value
+    })
+  }
+
+  pub fn peek_mut(&mut self) -> Option<&mut T> {
+    self.root.as_mut().map(|node| {
+      &mut node.value
+    })
+  }
 }
 
 impl<T> Drop for List<T> {
@@ -52,7 +64,7 @@ mod test {
   use super::Node;
 
   #[test]
-  fn tests() {
+  fn push_pop() {
     // Testing List<f32>
     let mut list: List<f32> = List::new(None);
 
@@ -84,5 +96,13 @@ mod test {
     text.push_str(" ");
     text.push_str(list.pop().unwrap());
     assert_eq!(text, "Hello world");
+  }
+
+  #[test]
+  fn peek() {
+    let mut list: List<i32> = List::new(Some(Box::new(Node::new(42, None))));
+
+    assert_eq!(list.peek(), Some(&42));
+    assert_eq!(list.peek_mut(), Some(&mut 42));
   }
 }
