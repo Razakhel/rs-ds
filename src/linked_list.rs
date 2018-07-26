@@ -38,3 +38,32 @@ impl<T> List<T> {
     }
   }
 }
+
+#[cfg(test)]
+mod test {
+  use super::List;
+
+  #[test]
+  fn tests() {
+    let mut list: List<f32> = List::new(None);
+
+    assert_eq!(list.pop(), None);
+
+    list.push(0.0f32);
+    list.push(43723.0f32);
+    list.push(2.134f32);
+    list.push(42.0f32);
+
+    assert_eq!(list.pop(), Some(42.0f32));
+    assert_eq!(list.pop(), Some(2.134f32));
+
+    list.push(123.456f32);
+    list.push(0.00001f32);
+
+    assert_eq!(list.pop(), Some(0.00001f32));
+    assert_eq!(list.pop(), Some(123.456f32));
+    assert_eq!(list.pop(), Some(43723.0f32));
+    assert_eq!(list.pop(), Some(0.0f32));
+    assert_eq!(list.pop(), None);
+  }
+}
