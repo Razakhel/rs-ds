@@ -21,30 +21,27 @@ impl<T> List<T> {
   pub fn push(&mut self, value: T) {
     let new_node = Node {
       value,
-      next: mem::replace(&mut self.root, None)
+      next: self.root.take()
     };
 
     self.root = Some(Box::new(new_node))
   }
 
   pub fn pop(&mut self) -> Option<T> {
-    match mem::replace(&mut self.root, None) {
-      Some(node) => {
-        let temp_node = *node;
-        self.root = temp_node.next;
-        Some(temp_node.value)
-      },
-      None => None
-    }
+    self.root.take().map(|node| {
+      let temp_node = *node;
+      self.root = temp_node.next;
+      temp_node.value
+    })
   }
 }
 
 impl<T> Drop for List<T> {
   fn drop(&mut self) {
-    let mut curr_node = mem::replace(&mut self.root, None);
+    let mut curr_node = self.root.take();
 
     while let Some(mut node) = curr_node {
-      curr_node = mem::replace(&mut node.next, None);
+      curr_node = node.next.take();
     }
   }
 }
@@ -52,9 +49,11 @@ impl<T> Drop for List<T> {
 #[cfg(test)]
 mod test {
   use super::List;
+  use super::Node;
 
   #[test]
   fn tests() {
+    // Testing List<f32>
     let mut list: List<f32> = List::new(None);
 
     assert_eq!(list.pop(), None);
@@ -75,5 +74,15 @@ mod test {
     assert_eq!(list.pop(), Some(43723.0f32));
     assert_eq!(list.pop(), Some(0.0f32));
     assert_eq!(list.pop(), None);
+
+    // Testing List<&str>
+    let mut list: List<&str> = List::new(Some(Box::new(Node::new("Hello",
+                                                                 Some(Box::new(Node::new("world",
+                                                                                         None)))))));
+
+    let mut text = String::from(list.pop().unwrap());
+    text.push_str(" ");
+    text.push_str(list.pop().unwrap());
+    assert_eq!(text, "Hello world");
   }
 }
