@@ -39,6 +39,16 @@ impl<T> List<T> {
   }
 }
 
+impl<T> Drop for List<T> {
+  fn drop(&mut self) {
+    let mut curr_node = mem::replace(&mut self.root, None);
+
+    while let Some(mut node) = curr_node {
+      curr_node = mem::replace(&mut node.next, None);
+    }
+  }
+}
+
 #[cfg(test)]
 mod test {
   use super::List;
